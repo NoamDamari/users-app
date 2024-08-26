@@ -1,8 +1,10 @@
 package com.example.usersapp.data.local_db;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -14,7 +16,10 @@ import java.util.List;
 public interface UserDao {
 
     @Insert
-    void addUser(User user);
+    void insertUser(User user);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAllUsers(List<User> users);
 
     @Update
     void updateUser(User user);
@@ -24,4 +29,7 @@ public interface UserDao {
 
     @Query("SELECT * FROM users")
     List<User> getAllUsers();
+
+    @Query("SELECT COUNT(*) FROM users")
+    int getUserCount();
 }

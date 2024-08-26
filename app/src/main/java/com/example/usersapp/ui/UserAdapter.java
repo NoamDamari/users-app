@@ -25,6 +25,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.userList = userList;
     }
 
+    public static class UserViewHolder extends RecyclerView.ViewHolder{
+        private final UserListItemBinding binding;
+        public UserViewHolder(UserListItemBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+    }
+
     @NonNull
     @Override
     public UserAdapter.UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,11 +63,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return userList.size();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder{
-        private final UserListItemBinding binding;
-        public UserViewHolder(UserListItemBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
+    public void setUserList(List<User> users) {
+        userList.clear();
+        userList.addAll(users);
+        notifyDataSetChanged();
     }
 }
