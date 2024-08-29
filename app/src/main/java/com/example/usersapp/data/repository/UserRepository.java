@@ -15,6 +15,7 @@ import com.example.usersapp.data.network.RetrofitClient;
 import com.example.usersapp.data.network.UsersApiService;
 import com.example.usersapp.utils.SnackBarUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,14 +30,14 @@ public class UserRepository {
     private UserDao userDao;
     private final UsersApiService usersApiService;
     private final ExecutorService executor;
-    private final MutableLiveData<List<User>> userListLiveData = new MutableLiveData<>();
+    private final LiveData<List<User>> userListLiveData;
 
     public UserRepository(Application application) {
         AppDatabase database = AppDatabase.getDatabase(application);
         this.userDao = database.userDao();
         this.usersApiService = RetrofitClient.getRetrofitClient().create(UsersApiService.class);
         this.executor = Executors.newSingleThreadExecutor();
-        loadUserList();
+        userListLiveData = userDao.getAllUsers();
     }
 
     /*
@@ -54,13 +55,13 @@ public class UserRepository {
      */
     public void loadUserList() {
         executor.execute(() -> {
-            List<User> users = userDao.getAllUsers();
+            List<User> users = userDao.getAllUsers().getValue();
             if (users == null || users.isEmpty()) {
                 Log.d("UserRepository", "Room database is empty, fetching from API");
                 fetchUsersFromApi();
             } else {
                 Log.d("UserRepository", "Room database has users, updating LiveData");
-                userListLiveData.postValue(users);
+                //userListLiveData.postValue(users);
             }
         });
     }
@@ -78,7 +79,7 @@ public class UserRepository {
                 if(response.isSuccessful() && response.body() != null){
                     UserResponse userResponse = response.body();
                     List<User> userList = userResponse.getUserList();
-                    userListLiveData.postValue(userList);
+                    //userListLiveData.postValue(userList);
                     executor.execute(() -> userDao.insertAllUsers(userList));
                 }
             }
@@ -86,6 +87,18 @@ public class UserRepository {
             public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
                 Log.e("UserRepository", "API call failed: " + t.getMessage());
             }
+        });
+    }
+
+    public void addUser(User user) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            userDao.insertUser(user);
+        });
+    }
+
+    public void deleteUser(User user) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            userDao.deleteUser(user);
         });
     }
 }

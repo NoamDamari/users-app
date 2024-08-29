@@ -9,11 +9,12 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "users")
 public class User {
+
+    //@SerializedName("id")
+    // @ColumnInfo(name = "id")
+    //String id;
     @NonNull
     @PrimaryKey()
-    @SerializedName("id")
-    @ColumnInfo(name = "id")
-    String id;
     @ColumnInfo(name = "email")
     @SerializedName("email")
     String email;
@@ -27,27 +28,35 @@ public class User {
     @SerializedName("avatar")
     String imageUrl;
 
-    public User(String id, String email, String firstName, String lastName, String imageUrl) {
+    /*public User(String id, String email, String firstName, String lastName, String imageUrl) {
         this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.imageUrl = imageUrl;
+    }*/
+
+    public User(@NonNull String email, String firstName, String lastName, String imageUrl) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.imageUrl = imageUrl;
     }
 
-    public String getId() {
+    /*public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
+    }*/
 
+    @NonNull
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(@NonNull String email) {
         this.email = email;
     }
 

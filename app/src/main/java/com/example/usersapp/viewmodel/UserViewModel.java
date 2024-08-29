@@ -4,29 +4,30 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.usersapp.data.models.User;
 import com.example.usersapp.data.repository.UserRepository;
 
-import java.util.List;
-
-
 public class UserViewModel extends AndroidViewModel {
-
     private final UserRepository userRepository;
-    private final LiveData<List<User>> userListLiveData;
+    private final MutableLiveData<User> userLiveData = new MutableLiveData<>();
+
     public UserViewModel(@NonNull Application application) {
         super(application);
         this.userRepository = new UserRepository(application);
-        this.userListLiveData = userRepository.getUserListLiveData();
     }
 
-    /*
-     * Returns LiveData containing the list of users.
-     */
-    public LiveData<List<User>> getUserListLiveData() {
-        return userListLiveData;
+    public MutableLiveData<User> getUserLiveData() {
+        return userLiveData;
+    }
+
+    public void setUser(User user) {
+        userLiveData.setValue(user);
+    }
+
+    public void addUser(User user) {
+        userRepository.addUser(user);
     }
 }

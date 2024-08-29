@@ -28,7 +28,7 @@ public interface UserDao {
     void deleteUser(User user);
 
     @Query("SELECT * FROM users")
-    List<User> getAllUsers();
+    LiveData<List<User>> getAllUsers();
 
     @Query("SELECT COUNT(*) FROM users")
     int getUserCount();

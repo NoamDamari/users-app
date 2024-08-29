@@ -2,7 +2,9 @@ package com.example.usersapp.ui;
 
 import android.view.LayoutInflater;
 import android.view.RoundedCorner;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,8 +23,10 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder>{
 
     private List<User> userList;
-    public UserAdapter(List<User> userList) {
+    private UserActionListener actionListener;
+    public UserAdapter(List<User> userList, UserActionListener actionListener) {
         this.userList = userList;
+        this.actionListener = actionListener;
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder{
@@ -56,6 +60,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 .placeholder(R.drawable.icon_user)
                 .error(R.drawable.icon_user)
                 .into(holder.binding.userImageView);
+
+        holder.binding.userItemMenuBtn.setOnClickListener(v -> showUserPopupMenu(v, position));
     }
 
     @Override
@@ -68,4 +74,33 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         userList.addAll(users);
         notifyDataSetChanged();
     }
+
+    public User getUserAtPosition(int position) {
+        return userList.get(position);
+    }
+    private void showUserPopupMenu(View view, int position) {
+        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+        popupMenu.getMenuInflater().inflate(R.menu.user_options_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(option -> {
+            int itemId = option.getItemId();
+            if (itemId == R.id.action_update) {
+                actionListener.onUpdateUser(position);
+                return true;
+            } else if (itemId == R.id.action_delete) {
+                actionListener.onDeleteUser(position);
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        popupMenu.show();
+    }
+
+    public interface UserActionListener {
+        void onUpdateUser(int position);
+        void onDeleteUser(int position);
+    }
+
 }
