@@ -1,20 +1,23 @@
 package com.example.usersapp.data.models;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.example.usersapp.R;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "users")
 public class User {
-
+    @PrimaryKey(autoGenerate = true)
     //@SerializedName("id")
-    // @ColumnInfo(name = "id")
-    //String id;
-    @NonNull
-    @PrimaryKey()
+    @ColumnInfo(name = "id")
+    int id;
+
     @ColumnInfo(name = "email")
     @SerializedName("email")
     String email;
@@ -26,37 +29,39 @@ public class User {
     String lastName;
     @ColumnInfo(name = "image")
     @SerializedName("avatar")
-    String imageUrl;
+    String imageUri;
 
-    /*public User(String id, String email, String firstName, String lastName, String imageUrl) {
+
+    public User(int id, String email, String firstName, String lastName, String imageUri) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.imageUrl = imageUrl;
-    }*/
+        this.imageUri = imageUri;
+    }
 
-    public User(@NonNull String email, String firstName, String lastName, String imageUrl) {
+    @Ignore
+    public User(String email, String firstName, String lastName, String imageUri) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.imageUrl = imageUrl;
+        this.imageUri = imageUri;
     }
 
-    /*public String getId() {
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
-    }*/
+    }
 
-    @NonNull
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(@NonNull String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -82,12 +87,12 @@ public class User {
 
         return nameBuilder.toString();
     }
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImageUri() {
+        return imageUri;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 }
 

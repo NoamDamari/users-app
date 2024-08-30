@@ -27,17 +27,16 @@ import retrofit2.Retrofit;
 
 public class UserRepository {
 
-    private UserDao userDao;
+    private final UserDao userDao;
     private final UsersApiService usersApiService;
     private final ExecutorService executor;
-    private final LiveData<List<User>> userListLiveData;
+
 
     public UserRepository(Application application) {
         AppDatabase database = AppDatabase.getDatabase(application);
         this.userDao = database.userDao();
         this.usersApiService = RetrofitClient.getRetrofitClient().create(UsersApiService.class);
         this.executor = Executors.newSingleThreadExecutor();
-        userListLiveData = userDao.getAllUsers();
     }
 
     /*
@@ -45,8 +44,11 @@ public class UserRepository {
      * This LiveData will be updated when data is fetched from the database or API.
      */
     public LiveData<List<User>> getUserListLiveData(){
+        return userDao.getAllUsers();
+    }
 
-        return userListLiveData;
+    public LiveData<User> getUserById(int id){
+        return userDao.getUserById(id);
     }
 
     /*
@@ -55,13 +57,12 @@ public class UserRepository {
      */
     public void loadUserList() {
         executor.execute(() -> {
-            List<User> users = userDao.getAllUsers().getValue();
-            if (users == null || users.isEmpty()) {
+            int users = userDao.getUserCount();
+            if (users == 0) {
                 Log.d("UserRepository", "Room database is empty, fetching from API");
                 fetchUsersFromApi();
             } else {
                 Log.d("UserRepository", "Room database has users, updating LiveData");
-                //userListLiveData.postValue(users);
             }
         });
     }
@@ -79,7 +80,6 @@ public class UserRepository {
                 if(response.isSuccessful() && response.body() != null){
                     UserResponse userResponse = response.body();
                     List<User> userList = userResponse.getUserList();
-                    //userListLiveData.postValue(userList);
                     executor.execute(() -> userDao.insertAllUsers(userList));
                 }
             }
@@ -99,6 +99,12 @@ public class UserRepository {
     public void deleteUser(User user) {
         Executors.newSingleThreadExecutor().execute(() -> {
             userDao.deleteUser(user);
+        });
+    }
+
+    public void updateUser(User user) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            userDao.updateUser(user);
         });
     }
 }

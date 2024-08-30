@@ -22,8 +22,8 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder>{
 
-    private List<User> userList;
-    private UserActionListener actionListener;
+    private final List<User> userList;
+    private final UserActionListener actionListener;
     public UserAdapter(List<User> userList, UserActionListener actionListener) {
         this.userList = userList;
         this.actionListener = actionListener;
@@ -55,7 +55,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                 .transform(new CenterCrop() , new RoundedCorners(8));
 
         Glide.with(holder.itemView.getContext())
-                .load(user.getImageUrl())
+                .load(user.getImageUri())
                 .apply(requestOptions)
                 .placeholder(R.drawable.icon_user)
                 .error(R.drawable.icon_user)
@@ -78,6 +78,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public User getUserAtPosition(int position) {
         return userList.get(position);
     }
+
     private void showUserPopupMenu(View view, int position) {
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
         popupMenu.getMenuInflater().inflate(R.menu.user_options_menu, popupMenu.getMenu());

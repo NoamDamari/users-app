@@ -31,6 +31,7 @@ public class ImagePickerManager {
                 new ActivityResultContracts.OpenDocument(),
                 uri -> {
                     if (uri != null) {
+                        requestUriPermissions((Activity) fragment.requireContext(), uri);
                         callback.onImagePicked(uri);
                     }
                 });
@@ -49,7 +50,6 @@ public class ImagePickerManager {
             ImageView imageView) {
         RequestOptions requestOptions = getImageRequestOptions(30);
         loadImageWithGlide(context, uri, requestOptions, imageView);
-        requestUriPermissions((Activity) context, uri);
     }
 
     /**
@@ -97,7 +97,6 @@ public class ImagePickerManager {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             );
         } else {
-            // Handle the case where the activity is null
             throw new IllegalArgumentException("Activity must not be null.");
         }
     }

@@ -18,7 +18,7 @@ public interface UserDao {
     @Insert
     void insertUser(User user);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAllUsers(List<User> users);
 
     @Update
@@ -29,6 +29,9 @@ public interface UserDao {
 
     @Query("SELECT * FROM users")
     LiveData<List<User>> getAllUsers();
+
+    @Query("SELECT * FROM users WHERE id = :id")
+    LiveData<User> getUserById(int id);
 
     @Query("SELECT COUNT(*) FROM users")
     int getUserCount();

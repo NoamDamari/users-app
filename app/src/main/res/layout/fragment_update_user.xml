@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="8dp"
-    tools:context=".ui.AddUserFragment">
+    tools:context=".ui.UpdateUserFragment">
 
     <ImageView
-        android:id="@+id/addUserImageView"
+        android:id="@+id/updateUserImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/icon_user"
-        app:layout_constraintBottom_toTopOf="@+id/pickImageBtn"
+        app:layout_constraintBottom_toTopOf="@+id/updatePickImageBtn"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/pickImageBtn"
+        android:id="@+id/updatePickImageBtn"
         style="@style/elevatedButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#101010"
-        android:text="Select Profile Image"
+        android:text="Update Profile Image"
         android:textColor="#E8E8E8"
         android:textSize="18sp"
         app:icon="@drawable/icon_user"
         app:iconTint="#E8E8E8"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="@+id/addUserImageView"
-        app:layout_constraintStart_toStartOf="@+id/addUserImageView"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="@+id/updateUserImageView"
+        app:layout_constraintStart_toStartOf="@+id/updateUserImageView"
         app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small" />
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/firstNameTF"
+        android:id="@+id/updateFirstNameTF"
         style="@style/editTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="First Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline">
+        app:layout_constraintTop_toTopOf="@+id/guideline2">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/firstNameET"
+            android:id="@+id/updateFirstNameET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/lastNameTF"
+        android:id="@+id/updateLastNameTF"
         style="@style/editTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Last Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/firstNameTF">
+        app:layout_constraintTop_toBottomOf="@+id/updateFirstNameTF">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/lastNameET"
+            android:id="@+id/updateLastNameET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailTF"
+        android:id="@+id/updateEmailTF"
         style="@style/editTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lastNameTF">
+        app:layout_constraintTop_toBottomOf="@+id/updateLastNameTF">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailET"
+            android:id="@+id/updateEmailET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/addUserBtn"
+        android:id="@+id/updateUserBtn"
         style="@style/elevatedButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#101010"
-        android:text="Add User"
+        android:text="Update User"
         android:textColor="#E8E8E8"
         android:textSize="18sp"
         app:icon="@drawable/icon_user"
@@ -101,11 +101,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailTF"
+        app:layout_constraintTop_toBottomOf="@+id/updateEmailTF"
         app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

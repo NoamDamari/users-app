@@ -42,21 +42,31 @@ public class UserListFragment extends Fragment implements UserAdapter.UserAction
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        buildDeleteConfirmationDialog();
+        initializeViewModel();
         setupRecyclerView();
+        buildDeleteConfirmationDialog();
+        observeUserList();
+        setUpUIListeners();
+    }
+
+    private void initializeViewModel() {
         viewModel = new ViewModelProvider(this).get(UserListViewModel.class);
+    }
+
+    private void observeUserList() {
         viewModel.getUserListLiveData().observe(getViewLifecycleOwner(), users -> {
             if(users != null){
                 adapter.setUserList(users);
             }
         });
+    }
+    public void setUpUIListeners() {
         binding.toAddUserBtn.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_userListFragment_to_addUserFragment));
     }
 
+
     private void setupRecyclerView() {
         adapter = new UserAdapter(new ArrayList<User>(), this);
-
         usersRV = binding.userLIstRV;
         usersRV.setLayoutManager(new LinearLayoutManager(getContext()));
         usersRV.setAdapter(adapter);
@@ -70,7 +80,11 @@ public class UserListFragment extends Fragment implements UserAdapter.UserAction
 
     @Override
     public void onUpdateUser(int position) {
-
+        int userId = adapter.getUserAtPosition(position).getId();
+        Bundle bundle = new Bundle();
+        bundle.putInt("USER_ID", userId);
+        Navigation.findNavController(requireView())
+                .navigate(R.id.action_userListFragment_to_updateUserFragment, bundle);
     }
 
     @Override
