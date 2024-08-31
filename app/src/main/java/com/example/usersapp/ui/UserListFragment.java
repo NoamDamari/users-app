@@ -1,5 +1,7 @@
 package com.example.usersapp.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,10 +19,11 @@ import com.example.usersapp.R;
 import com.example.usersapp.data.models.User;
 import com.example.usersapp.databinding.FragmentUserListBinding;
 import com.example.usersapp.utils.AlertDialogUtils;
+import com.example.usersapp.utils.SnackBarUtils;
 import com.example.usersapp.viewmodel.UserListViewModel;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class UserListFragment extends Fragment implements UserAdapter.UserActionListener {
@@ -30,6 +33,8 @@ public class UserListFragment extends Fragment implements UserAdapter.UserAction
     private int userPosition;
     private RecyclerView usersRV;
     private UserAdapter adapter;
+    private static final String PREFS_NAME = "app_prefs";
+    private static final String KEY_FIRST_LAUNCH = "first_launch";
     private AlertDialog deleteConfirmationDialog;
 
     @Override
@@ -49,25 +54,46 @@ public class UserListFragment extends Fragment implements UserAdapter.UserAction
         setUpUIListeners();
     }
 
+    /**
+     * Initializes the ViewModel
+     * loads users if it's the first launch
+     */
     private void initializeViewModel() {
-        viewModel = new ViewModelProvider(this).get(UserListViewModel.class);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isFirstLaunch = sharedPreferences.getBoolean(KEY_FIRST_LAUNCH, true);
+        viewModel = new ViewModelProvider(requireActivity()).get(UserListViewModel.class);
+        if (isFirstLaunch) {
+            viewModel.loadUsers();
+            sharedPreferences.edit().putBoolean(KEY_FIRST_LAUNCH, false).apply();
+        }
     }
 
+    /**
+     * Observes changes in the user list and updates the adapter
+     */
     private void observeUserList() {
         viewModel.getUserListLiveData().observe(getViewLifecycleOwner(), users -> {
             if(users != null){
-                adapter.setUserList(users);
+                List<User> reversedList = new ArrayList<>(users);
+                Collections.reverse(reversedList);
+                adapter.setUserList(reversedList);
             }
         });
     }
+
+    /**
+     * Sets up listeners for UI interactions
+     */
     public void setUpUIListeners() {
         binding.toAddUserBtn.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_userListFragment_to_addUserFragment));
     }
 
-
+    /**
+     * Configures the RecyclerView
+     */
     private void setupRecyclerView() {
         adapter = new UserAdapter(new ArrayList<User>(), this);
-        usersRV = binding.userLIstRV;
+        usersRV = binding.userListRV;
         usersRV.setLayoutManager(new LinearLayoutManager(getContext()));
         usersRV.setAdapter(adapter);
     }
@@ -78,6 +104,10 @@ public class UserListFragment extends Fragment implements UserAdapter.UserAction
         binding = null;
     }
 
+    /**
+     * Handles the user update action
+     * @param position The position of the user in the adapter to be updated.
+     */
     @Override
     public void onUpdateUser(int position) {
         int userId = adapter.getUserAtPosition(position).getId();
@@ -87,30 +117,44 @@ public class UserListFragment extends Fragment implements UserAdapter.UserAction
                 .navigate(R.id.action_userListFragment_to_updateUserFragment, bundle);
     }
 
+    /**
+     * Handles the user deletion action
+     * @param position The position of the user in the adapter to be deleted.
+     */
     @Override
     public void onDeleteUser(int position) {
         userPosition = position;
         showDeleteConfirmationDialog();
     }
 
+    /**
+     * Shows the delete confirmation dialog.
+     */
     private void showDeleteConfirmationDialog() {
         if (deleteConfirmationDialog != null) {
             deleteConfirmationDialog.show();
         }
     }
+    /**
+     * Deletes the user at the specified position and updates the UI
+     */
     private void deleteUser(){
         User userToDelete = adapter.getUserAtPosition(userPosition);
         viewModel.deleteUser(userToDelete);
         adapter.notifyItemChanged(userPosition);
+        SnackBarUtils.showSnackBar(requireView(), "User deleted successfully");
     }
 
+    /**
+     * Builds the confirmation dialog for user deletion
+     */
     private void buildDeleteConfirmationDialog() {
         deleteConfirmationDialog = AlertDialogUtils.createConfirmationDialog(
                 requireContext(),
-                "Confirm Deletion",
-                "Are you sure you want to delete this user?",
-                "Yes",
-                "No",
+                getString(R.string.confirm_deletion),
+                getString(R.string.delete_message),
+                getString(R.string.yes),
+                getString(R.string.no),
                 (dialog, which) -> deleteUser(),
                 (dialog, which) -> dialog.dismiss()
         );

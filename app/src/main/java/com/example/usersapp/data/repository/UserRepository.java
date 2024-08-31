@@ -31,7 +31,6 @@ public class UserRepository {
     private final UsersApiService usersApiService;
     private final ExecutorService executor;
 
-
     public UserRepository(Application application) {
         AppDatabase database = AppDatabase.getDatabase(application);
         this.userDao = database.userDao();
@@ -39,7 +38,7 @@ public class UserRepository {
         this.executor = Executors.newSingleThreadExecutor();
     }
 
-    /*
+    /**
      * Returns LiveData containing the list of users.
      * This LiveData will be updated when data is fetched from the database or API.
      */
@@ -51,7 +50,7 @@ public class UserRepository {
         return userDao.getUserById(id);
     }
 
-    /*
+    /**
      * Loads the user list from the Room database.
      * If the database is empty, it will fetch users from the API.
      */
@@ -67,9 +66,9 @@ public class UserRepository {
         });
     }
 
-    /*
-     * Fetches the user list from the API and updates the database.
-     * On a successful response, updates LiveData and inserts users into the Room database.
+    /**
+     * Fetches the user list from the API.
+     * On a successful response, updates the database and LiveData with the new user list.
      */
     public void fetchUsersFromApi(){
 
@@ -90,18 +89,27 @@ public class UserRepository {
         });
     }
 
+    /**
+     * Adds a new user to the database.
+     */
     public void addUser(User user) {
         Executors.newSingleThreadExecutor().execute(() -> {
             userDao.insertUser(user);
         });
     }
 
+    /**
+     * Deletes an existing user from the database.
+     */
     public void deleteUser(User user) {
         Executors.newSingleThreadExecutor().execute(() -> {
             userDao.deleteUser(user);
         });
     }
 
+    /**
+     * Updates an existing user's information in the database.
+     */
     public void updateUser(User user) {
         Executors.newSingleThreadExecutor().execute(() -> {
             userDao.updateUser(user);

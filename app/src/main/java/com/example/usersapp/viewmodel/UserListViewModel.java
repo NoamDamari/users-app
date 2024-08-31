@@ -22,8 +22,6 @@ public class UserListViewModel extends AndroidViewModel {
         super(application);
         this.userRepository = new UserRepository(application);
         this.userListLiveData = userRepository.getUserListLiveData();
-
-        loadUsers();
     }
 
     public LiveData<List<User>> getUserListLiveData() {
@@ -33,6 +31,7 @@ public class UserListViewModel extends AndroidViewModel {
     public void loadUsers() {
         userRepository.loadUserList();
     }
+
     public void deleteUser(User user){
         userRepository.deleteUser(user);
     }

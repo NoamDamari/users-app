@@ -1,4 +1,4 @@
-package com.example.usersapp;
+package com.example.usersapp.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.usersapp.R;
 
 public class ImagePickerManager {
 

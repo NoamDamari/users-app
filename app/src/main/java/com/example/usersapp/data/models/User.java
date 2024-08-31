@@ -1,23 +1,16 @@
 package com.example.usersapp.data.models;
 
-import android.net.Uri;
-
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
-import com.example.usersapp.R;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "users")
 public class User {
     @PrimaryKey(autoGenerate = true)
-    //@SerializedName("id")
     @ColumnInfo(name = "id")
     int id;
-
     @ColumnInfo(name = "email")
     @SerializedName("email")
     String email;
@@ -30,7 +23,6 @@ public class User {
     @ColumnInfo(name = "image")
     @SerializedName("avatar")
     String imageUri;
-
 
     public User(int id, String email, String firstName, String lastName, String imageUri) {
         this.id = id;
@@ -47,7 +39,6 @@ public class User {
         this.lastName = lastName;
         this.imageUri = imageUri;
     }
-
 
     public int getId() {
         return id;
@@ -78,7 +69,7 @@ public class User {
     }
 
     public void setLastName(String lastName) {
-        lastName = lastName;
+        this.lastName = lastName;
     }
 
     public String getName() {

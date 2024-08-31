@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UsersApp</string>
+    <string name="add_user">הוסף משתמש</string>
+    <string name="select_image">בחר\\י תמונה</string>
+    <string name="first_name">שם פרטי</string>
+    <string name="last_name">שם משפחה</string>
+    <string name="email">אימייל</string>
+    <string name="add_user_details">הוסף פרטי משתמש</string>
+    <string name="user_image">תמונת משתמש</string>
+    <string name="update_user_details">עדכון פרטי משתמש</string>
+    <string name="update_user">עדכון משתמש</string>
+    <string name="update_image">עדכון תמונה</string>
+    <string name="confirm_deletion">הסרת משתמש</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="user_updated_successfully">המשתמש עודכן בהצלחה</string>
+    <string name="user_added_successfully">המשתמש נוסף בהצלחה</string>
+    <string name="delete_message">האם את/ה בטוח/ה שברצונך להסיר את המשתמש?</string>
+    <string name="user_name">שם משתמש</string>
+    <string name="manage_and_view_your_users_effortlessly">צפה ונהל את המשתמשים שלך בקלות</string>
+    <string name="users_app">אפליקציית משתמשים</string>
+    <string name="user_list_screen">מסך רשימת משתמשים</string>
+</resources>

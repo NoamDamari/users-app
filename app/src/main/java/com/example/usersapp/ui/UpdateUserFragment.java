@@ -2,24 +2,22 @@ package com.example.usersapp.ui;
 
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
+import androidx.navigation.Navigation;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.usersapp.ImagePickerManager;
+import com.example.usersapp.utils.ImagePickerManager;
 import com.example.usersapp.R;
+import com.example.usersapp.utils.UserInputValidator;
 import com.example.usersapp.data.models.User;
-import com.example.usersapp.databinding.FragmentAddUserBinding;
 import com.example.usersapp.databinding.FragmentUpdateUserBinding;
-import com.example.usersapp.viewmodel.UserListViewModel;
+import com.example.usersapp.utils.SnackBarUtils;
 import com.example.usersapp.viewmodel.UserViewModel;
 
 
@@ -48,18 +46,33 @@ public class UpdateUserFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initializeViewModel();
         loadUserDetails();
+        updateUIFromImageUriLiveData();
         setUpUIListeners();
     }
 
+    /**
+     * Initializes the ViewModel for this Fragment.
+     */
     private void initializeViewModel() {
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
     }
 
+    /**
+     * Sets up listeners for UI interactions.
+     */
     public void setUpUIListeners() {
         binding.updatePickImageBtn.setOnClickListener(v -> openImagePicker());
         binding.updateUserBtn.setOnClickListener(v -> {
-            User updatedUser = updateUserFromInput();
-            viewModel.updateUser(updatedUser);
+            if(inputIsValid()){
+                User updatedUser = updateUserFromInput();
+                viewModel.updateUser(updatedUser);
+                SnackBarUtils.showSnackBar(v, getString(R.string.user_updated_successfully));
+                Navigation.findNavController(v).navigate(R.id.action_updateUserFragment_to_userListFragment);
+            }
+        });
+
+        binding.updateUserTopAppBar.setNavigationOnClickListener(v -> {
+            Navigation.findNavController(v).popBackStack();
         });
     }
     /**
@@ -69,6 +82,7 @@ public class UpdateUserFragment extends Fragment {
         imagePickerLauncher = ImagePickerManager.createImagePickerLauncher(this, uri -> {
             if (uri != null) {
                 imageUri = uri;
+                viewModel.setImageUri(imageUri);
                 ImagePickerManager.handleImageUri(requireContext(), uri, binding.updateUserImageView);
             }
         });
@@ -93,7 +107,6 @@ public class UpdateUserFragment extends Fragment {
 
     /**
      * Displays user details in the UI.
-     *
      * @param user The user to display.
      */
     private void displayUserDetails(User user) {
@@ -107,8 +120,20 @@ public class UpdateUserFragment extends Fragment {
     }
 
     /**
+     * Updates the UI with the image URI from the ViewModel's LiveData.
+     */
+    private void updateUIFromImageUriLiveData() {
+        viewModel.getImageUriLiveData().observe(getViewLifecycleOwner(), uri -> {
+            if (uri != null) {
+                imageUri = uri;
+                ImagePickerManager.handleImageUri(requireContext(), uri, binding.updateUserImageView);
+            }
+        });
+    }
+
+
+    /**
      * Creates a User object from the input fields and the selected image.
-     *
      * @return The User object with updated details.
      */
     private User updateUserFromInput() {
@@ -116,11 +141,23 @@ public class UpdateUserFragment extends Fragment {
         String userFirstName = binding.updateFirstNameET.getText().toString().trim();
         String userLastName = binding.updateLastNameET.getText().toString().trim();
         String userEmail = binding.updateEmailET.getText().toString().trim();
-        String imageUri = (this.imageUri != null) ? this.imageUri.toString() : viewModel.getUserLiveData().getValue().getImageUri() ;
+        String imageUri = (this.imageUri != null) ? this.imageUri.toString() : viewModel.getUserLiveData().getValue().getImageUri();
 
         return new User(userId, userEmail, userFirstName, userLastName, imageUri);
     }
 
+    /**
+     * Validates user input fields.
+     * @return true if all input fields are valid, false otherwise.
+     */
+    private boolean inputIsValid() {
+        return UserInputValidator.validateUserInputFields(binding.updateFirstNameET, binding.updateFirstNameTF,
+                binding.updateLastNameET, binding.updateLastNameTF, binding.updateEmailET, binding.updateEmailTF);
+    }
+
+    /**
+     * Opens the image picker to select an image.
+     */
     private void openImagePicker() {
         imagePickerLauncher.launch(new String[]{"image/*"});
     }
